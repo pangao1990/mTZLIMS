@@ -1,0 +1,85 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "泰臻医学检测助手",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3d7eff"
+			}
+		},
+		{
+			"path": "pages/index/list",
+			"style": {
+				"navigationBarTitleText": "泰臻医学检测助手",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3d7eff"
+			}
+		},
+		{
+			"path": "pages/index/info",
+			"style": {
+				"navigationBarTitleText": "泰臻医学检测助手",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3d7eff"
+			}
+		},
+		{
+			"path": "pages/login/index",
+			"style": {
+				"navigationBarTitleText": "泰臻医学检测助手",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3d7eff"
+			}
+		},
+		{
+			"path": "pages/sample/add",
+			"style": {
+				"navigationBarTitleText": "泰臻医学检测助手",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3d7eff"
+			}
+		},
+		{
+			"path": "pages/sample/list",
+			"style": {
+				"navigationBarTitleText": "泰臻医学检测助手",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3d7eff"
+			}
+		},
+		{
+			"path": "pages/sample/report",
+			"style": {
+				"navigationBarTitleText": "泰臻医学检测助手",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3d7eff"
+			}
+		},
+		{
+			"path": "pages/sample/pdf",
+			"style": {
+				"navigationBarTitleText": "泰臻医学检测助手",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3d7eff"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"navigationStyle": "custom"
+	},
+	"uniIdRouter": {},
+	"easycom": {
+		"custom": {
+			"^tn-(.*)-(item|group)$": "@/uni_modules/tuniaoui-vue3/components/$1/src/$1-$2.vue",
+			"^tn-(.*)": "@/uni_modules/tuniaoui-vue3/components/$1/src/$1.vue",
+			"^zxz-(.*)": "@/uni_modules/zxz-uni-data-select/components/$1/$1.vue",
+			"^uni-(.*)": "@/uni_modules/$1/components/$1/$1.vue",
+			"^hbxw-(.*)": "@/uni_modules/hbxw-date-range-picker/components/$1/$1.vue"
+		}
+	}
+}
