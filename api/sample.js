@@ -149,3 +149,23 @@ export const apiConfigMatchAPIAdd = (params, config = {}) => {
 		...config,
 	})
 }
+
+// 客户配置
+export const apiConfigClientGetList = (params, config = {}) => {
+	return api.request({
+		url: '/config/client/get_list',
+		method: 'POST',
+		data: params,
+		...config,
+	})
+}
+
+// 业务经理API
+export const apiConfigManagerGetList = (params, config = {}) => {
+	return api.request({
+		url: '/config/manager/get_list',
+		method: 'POST',
+		data: params,
+		...config,
+	})
+}

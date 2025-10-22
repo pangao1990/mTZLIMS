@@ -1,16 +1,9 @@
 <template>
 	<tn-modal ref="modalRef" />
 	<view class="container">
-		<!-- 顶部渐变背景 -->
-		<view class="header-bg"></view>
 
-		<!-- <view class="divider-bottom">
-			<div class="text">Copyright © {{state.year}} 泰臻医学</div>
-		</view> -->
-
-		<!-- 主内容区域 -->
 		<view class="content">
-			<!-- 卡片1 - 搜索和横幅 -->
+			<!-- 卡片1 - 搜索框 -->
 			<view class="card search-card tn-shadow-blur">
 				<view class="search-container">
 					<tn-search-box v-model="state.search" @focus="gotoSearchSort1('')" @search="gotoSearchSort1('')" placeholder="请输入检测项目（下单、查询）"
@@ -19,28 +12,6 @@
 						<tn-icon name="my" bold size="22px" />
 					</view>
 				</view>
-
-				<div class="banner-container">
-					<img class="banner-image" src="/static/index/bar.png">
-					<div class="banner-overlay">
-						<div class="banner-title">领航神经疾病检验创新</div>
-						<div class="banner-subtitle">筑就神经系统健康坚固防线</div>
-					</div>
-				</div>
-
-				<view class="button-group">
-					<button class="action-btn outline" @click="state.showPopup2=true">公司简介</button>
-				</view>
-
-				<div v-if="storeUserInfo.isApplication">
-					<div class="divider-horizontal"></div>
-					<view class="button-group">
-						<button class="action-btn primary" @click="gotoSampleAdd">项目下单</button>
-						<view class="divider-vertical"></view>
-						<button class="action-btn primary" @click="gotoReportList">报告下载</button>
-					</view>
-				</div>
-
 			</view>
 
 			<!-- 卡片2 - 服务项目 -->
@@ -51,30 +22,60 @@
 
 				<view class="services-grid">
 					<view class="service-item" v-for="(item, index) in state.homes" :key="index" @click="gotoSearchSort1(item.sort1)">
-						<view class="service-card">
-							<view class="service-icon-bg" :class="`color-${index % 8}`">
-								<text class="service-abbr">{{item.sort1_abbr}}</text>
-							</view>
-							<view class="service-content">
-								<text class="service-name">{{item.sort1}}</text>
-								<text class="service-desc">{{item.description}}</text>
-							</view>
-							<view class="service-arrow">
-								<tn-icon name="right" size="24rpx" color="#999" />
-							</view>
+						<view class="service-card" :class="{ 'with-bg-image': item.imgUrl }" :style="item.imgUrl ? { backgroundImage: `url(${item.imgUrl})` } : {}">
+							<template v-if="!item.imgUrl">
+								<view class="service-icon-bg" :class="`color-${index % 8}`">
+									<text class="service-abbr">{{ item.sort1_abbr }}</text>
+								</view>
+								<view class="service-content">
+									<text class="service-name">{{ item.sort1 }}</text>
+									<text class="service-desc">{{ item.description.length > 5 ? item.description.slice(0, 5) + '...' : item.description }}</text>
+								</view>
+								<view class="service-arrow">
+									<tn-icon name="right" size="24rpx" color="#999" />
+								</view>
+							</template>
+
+							<template v-else>
+								<view class="service-image-overlay">
+									<text class="service-name-overlay">{{ item.sort1 }}</text>
+								</view>
+							</template>
 						</view>
 					</view>
 				</view>
+			</view>
 
+			<!-- 卡片3 - 公司简介 & 操作按钮 -->
+			<view class="card action-card tn-shadow-blur">
+				<view class="button-group">
+					<view v-if="storeUserInfo.isApplication" class="dual-btns">
+						<button class="action-btn primary" @click="gotoSampleAdd">项目下单</button>
+						<button class="action-btn primary" @click="gotoReportList">报告下载</button>
+					</view>
+					<view v-if="storeUserInfo.isApplication" class="divider-vertical"></view>
+					<button class="action-btn outline" @click="state.showPopup2=true">公司简介</button>
+				</view>
+			</view>
+
+			<!-- Banner 最底部 -->
+			<view class="card banner-card tn-shadow-blur">
+				<div class="banner-container">
+					<img class="banner-image" src="/static/index/bar.png" />
+					<div class="banner-overlay">
+						<div class="banner-title">领航神经疾病检验创新</div>
+						<div class="banner-subtitle">筑就神经系统健康坚固防线</div>
+					</div>
+				</div>
 			</view>
 		</view>
 	</view>
 
-	<!-- 公司简介 -->
+	<!-- 公司简介弹窗 -->
 	<tn-popup v-model="state.showPopup2" close-btn mode="bottom" height="70%">
 		<view class="popup-content">
 			<view class="popup-title">公司简介</view>
-			<scroll-view scroll-y class="popup-scroll" :style="{height: scrollHeight + 'px'}">
+			<scroll-view scroll-y class="popup-scroll" :style="{ height: scrollHeight + 'px' }">
 				<image class="company-logo" src="/static/index/about.png" mode="widthFix"></image>
 			</scroll-view>
 		</view>
@@ -130,6 +131,7 @@
 
 	// 跳转到 分类检索 页面
 	const gotoSearchSort1 = (sort1) => {
+		console.log('gotoSearchSort1', sort1)
 		uni.navigateTo({
 			url: `/pages/index/list?sort1=${sort1}`
 		})
@@ -210,6 +212,23 @@
 
 	// 跳转登录
 	const onLogin = () => {
+		uni.scanCode({
+			success: (res) => {
+				console.log('扫码结果:', res);
+				uni.showToast({
+					title: res.result,
+					icon: 'none'
+				});
+			},
+			fail: (err) => {
+				console.log('扫码失败:', err);
+				uni.showToast({
+					title: '扫码失败',
+					icon: 'none'
+				});
+			}
+		})
+
 		const token = storeUserInfo.token
 		if (token == '') storeUserInfo.setIsShowLogin(true)
 		else {
@@ -252,39 +271,52 @@
 
 <style scoped lang="scss">
 	.container {
-		position: relative;
 		min-height: 100vh;
-		background-color: #F8F9FF;
-	}
+		background: linear-gradient(to bottom, #f7faff, #eef3f9);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding-top: 0rpx;
+		position: relative;
 
-	.header-bg {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 440rpx;
-		background: #244851;
-		z-index: 0;
-		border-bottom-left-radius: 30rpx;
-		border-bottom-right-radius: 30rpx;
+		/* 顶部柔光阴影，制造视觉层次 */
+		&::before {
+			content: '';
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 80rpx;
+			background: linear-gradient(to bottom, rgba(0, 0, 0, 0.08), transparent);
+			z-index: 1;
+			pointer-events: none;
+		}
 	}
 
 	.content {
-		position: relative;
-		z-index: 1;
-		padding: 20rpx 30rpx;
-		padding-top: 40rpx;
+		width: 92%;
+		padding: 40rpx 0 120rpx;
+		display: flex;
+		flex-direction: column;
+		gap: 36rpx;
 	}
 
+	/* ========= 通用卡片 Apple风格浮层感 ========= */
 	.card {
-		z-index: -1;
-		background-color: #fff;
-		border-radius: 16rpx;
-		box-shadow: 0 10rpx 30rpx rgba(58, 123, 255, 0.12);
-		margin-bottom: 30rpx;
-		overflow: hidden;
+		background: rgba(255, 255, 255, 0.85);
+		backdrop-filter: blur(12rpx);
+		border-radius: 24rpx;
+		border: 1rpx solid rgba(255, 255, 255, 0.7);
+		box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+		transition: all 0.3s ease;
+
+		&:hover {
+			transform: translateY(-4rpx);
+			box-shadow: 0 8rpx 26rpx rgba(0, 0, 0, 0.08);
+		}
 	}
 
+	/* ========= 搜索卡片 ========= */
 	.search-card {
 		padding: 30rpx;
 
@@ -292,129 +324,46 @@
 			display: flex;
 			align-items: center;
 			gap: 20rpx;
+			position: relative;
+			z-index: 2;
+			pointer-events: auto;
 
 			.tn-search-box {
 				flex: 1;
-				min-width: 0;
+
+				input {
+					background-color: #f9fafc !important;
+				}
 			}
 
 			.login {
-				flex-shrink: 0;
 				width: 60rpx;
 				height: 60rpx;
 				border-radius: 50%;
 				background: #244851;
-				color: white;
-				box-shadow: 0 6rpx 12rpx rgba(36, 72, 81, 0.3);
+				color: #ffffff !important;
 				display: flex;
 				align-items: center;
 				justify-content: center;
-			}
-		}
+				box-shadow:
+					inset 0 0 6rpx rgba(255, 255, 255, 0.25),
+					0 4rpx 12rpx rgba(36, 72, 81, 0.4);
+				transition: all 0.3s ease;
 
-		.banner-container {
-			position: relative;
-			width: 100%;
-			height: auto;
-			border-radius: 12px;
-			margin: 30px 0;
-			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-			overflow: hidden;
-			cursor: pointer;
-
-			&:hover .banner-image {
-				transform: scale(1.03);
-			}
-
-			.banner-image {
-				width: 100%;
-				height: auto;
-				display: block;
-				transition: transform 0.5s ease;
-				box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
-			}
-
-			.banner-overlay {
-				position: absolute;
-				top: 50%;
-				left: 0;
-				width: 100%;
-				transform: translateY(-50%);
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				align-items: flex-start;
-				background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.3));
-				color: white;
-				padding: 20px;
-
-				.banner-title {
-					font-size: 1.1rem;
-					font-weight: bold;
-					text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-				}
-
-				.banner-subtitle {
-					margin-top: 15px;
-					font-size: 0.8rem;
-					font-weight: 500;
-					text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+				&:active {
+					transform: scale(0.9);
+					background: #1a3640;
 				}
 			}
-		}
-
-		.button-group {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			margin-top: 20rpx;
-
-			.action-btn {
-				flex: 1;
-				height: 80rpx;
-				border-radius: 40rpx;
-				font-size: 28rpx;
-				font-weight: 500;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-
-				&.primary {
-					background: #244851;
-					color: white;
-					box-shadow: 0 6rpx 12rpx rgba(36, 72, 81, 0.3);
-				}
-
-				&.outline {
-					border: 1px solid #244851;
-					color: #244851;
-					background: white;
-				}
-			}
-
-			.divider-vertical {
-				width: 1px;
-				height: 40rpx;
-				background-color: #eaeef5;
-				margin: 0 30rpx;
-			}
-		}
-
-		.divider-horizontal {
-			height: 1px;
-			background-color: #eaeef5;
-			margin: 30rpx 0;
 		}
 	}
 
+	/* ========= 服务项目卡片 ========= */
 	.services-card {
 		padding: 30rpx;
 
 		.section-title {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 30rpx;
+			margin-bottom: 20rpx;
 
 			.title-text {
 				font-size: 32rpx;
@@ -431,7 +380,7 @@
 					transform: translateY(-50%);
 					width: 6rpx;
 					height: 28rpx;
-					background: linear-gradient(135deg, #244851, #3A7BFF);
+					background: linear-gradient(135deg, #244851, #3a7bff);
 					border-radius: 3rpx;
 				}
 			}
@@ -439,34 +388,38 @@
 
 		.services-grid {
 			display: grid;
-			grid-template-columns: 1fr;
-			gap: 20rpx;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 24rpx;
 
 			.service-item {
+				position: relative;
+				z-index: 2;
+				pointer-events: auto;
+				width: 100%;
+
 				.service-card {
 					display: flex;
 					align-items: center;
-					padding: 30rpx;
+					padding: 24rpx;
 					background: linear-gradient(135deg, #f8faff, #ffffff);
-					border-radius: 16rpx;
-					border: 1px solid #f0f4ff;
+					border-radius: 18rpx;
+					border: 1px solid #eef3ff;
+					box-shadow: 0 4rpx 10rpx rgba(58, 123, 255, 0.06);
 					transition: all 0.3s ease;
-					box-shadow: 0 4rpx 12rpx rgba(58, 123, 255, 0.08);
 
-					&:active {
-						transform: translateY(2rpx);
-						box-shadow: 0 2rpx 8rpx rgba(58, 123, 255, 0.12);
-						background: linear-gradient(135deg, #f0f4ff, #ffffff);
+					&:hover {
+						transform: translateY(-3rpx);
+						box-shadow: 0 6rpx 14rpx rgba(58, 123, 255, 0.12);
 					}
 
 					.service-icon-bg {
-						width: 80rpx;
-						height: 80rpx;
+						width: 50rpx;
+						height: 50rpx;
 						border-radius: 16rpx;
 						display: flex;
 						align-items: center;
 						justify-content: center;
-						margin-right: 24rpx;
+						margin-right: 20rpx;
 						flex-shrink: 0;
 
 						&.color-0 {
@@ -502,7 +455,7 @@
 						}
 
 						.service-abbr {
-							font-size: 32rpx;
+							font-size: 24rpx;
 							font-weight: bold;
 							color: white;
 						}
@@ -514,33 +467,194 @@
 						flex-direction: column;
 
 						.service-name {
-							font-size: 30rpx;
+							font-size: 28rpx;
 							font-weight: bold;
 							color: #333;
-							margin-bottom: 8rpx;
+							margin-bottom: 6rpx;
 						}
 
 						.service-desc {
-							font-size: 24rpx;
+							font-size: 22rpx;
 							color: #999;
 						}
 					}
 
 					.service-arrow {
-						width: 48rpx;
-						height: 48rpx;
+						width: 40rpx;
+						height: 40rpx;
 						border-radius: 50%;
 						background: #f8f9ff;
 						display: flex;
 						align-items: center;
 						justify-content: center;
-						flex-shrink: 0;
+					}
+				}
+
+				.service-card.with-bg-image {
+					position: relative;
+					background-size: cover;
+					background-position: center;
+					border-radius: 18rpx;
+					height: 180rpx;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.1);
+					transition: all 0.3s ease;
+
+					&:hover {
+						transform: translateY(-3rpx);
+						box-shadow: 0 6rpx 14rpx rgba(0, 0, 0, 0.15);
+					}
+
+					.service-image-overlay {
+						width: 100%;
+						height: 50%;
+						background: rgba(0, 0, 0, 0.5); // 半透明黑遮罩增加文字可读性
+						border-radius: 18rpx;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+
+						.service-name-overlay {
+							font-size: 34rpx;
+							font-weight: bold;
+							color: #fff;
+							text-align: center;
+							padding: 0 20rpx;
+						}
 					}
 				}
 			}
 		}
 	}
 
+	/* ========= 操作按钮卡片 ========= */
+	.action-card {
+		padding: 30rpx 30rpx 40rpx;
+
+		.button-group {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 28rpx;
+
+			.dual-btns {
+				display: flex;
+				width: 100%;
+				gap: 20rpx;
+			}
+
+			.action-btn {
+				flex: 1;
+				height: 80rpx;
+				border-radius: 40rpx;
+				font-size: 28rpx;
+				font-weight: 500;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				transition: all 0.3s ease;
+
+				&.primary {
+					background: #244851;
+					color: white;
+					box-shadow: 0 6rpx 12rpx rgba(36, 72, 81, 0.3);
+
+					&:hover {
+						filter: brightness(1.1);
+					}
+				}
+
+				&.outline {
+					border: 1px solid #244851;
+					color: #244851;
+					background: white;
+					width: 100%;
+
+					&:hover {
+						background: #f7f9fb;
+					}
+				}
+			}
+
+			.divider-vertical {
+				width: 80%;
+				height: 1px;
+				background-color: #eaeef5;
+			}
+		}
+	}
+
+	/* ========= Banner 区域 + 渐变衔接带 ========= */
+	.banner-card {
+		position: relative;
+		padding: 0;
+		overflow: visible;
+		/* 让渐变带能超出边界 */
+
+		.banner-container {
+			position: relative;
+			width: 100%;
+			border-radius: 20rpx;
+			overflow: hidden;
+			box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+
+			.banner-image {
+				width: 100%;
+				height: auto;
+				display: block;
+				transition: transform 0.6s ease;
+			}
+
+			&:hover .banner-image {
+				transform: scale(1.03);
+			}
+
+			.banner-overlay {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: flex-start;
+				padding: 40rpx;
+				background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.35));
+				color: white;
+
+				.banner-title {
+					font-size: 34rpx;
+					font-weight: bold;
+					text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3);
+				}
+
+				.banner-subtitle {
+					margin-top: 16rpx;
+					font-size: 26rpx;
+					font-weight: 400;
+					text-shadow: 0 1rpx 3rpx rgba(0, 0, 0, 0.3);
+				}
+			}
+		}
+
+		/* 渐变衔接带 */
+		&::after {
+			content: '';
+			position: absolute;
+			top: -20rpx;
+			left: 0;
+			width: 100%;
+			height: 40rpx;
+			background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), transparent);
+			z-index: 0;
+			border-radius: 20rpx;
+		}
+	}
+
+	/* ========= 弹窗 ========= */
 	.popup-content {
 		width: 92vw;
 		height: 100%;
@@ -554,7 +668,6 @@
 			color: #333;
 			text-align: center;
 			margin-bottom: 30rpx;
-			flex-shrink: 0;
 
 			&::after {
 				content: '';
@@ -576,51 +689,6 @@
 			width: 100%;
 			border-radius: 12rpx;
 			margin-bottom: 30rpx;
-		}
-
-		.section {
-			margin-bottom: 30rpx;
-
-			.section-title {
-				font-size: 30rpx;
-				font-weight: bold;
-				color: #3A7BFF;
-				margin-bottom: 15rpx;
-				padding-left: 15rpx;
-				border-left: 6rpx solid #3A7BFF;
-			}
-
-			.section-item {
-				font-size: 28rpx;
-				color: #666;
-				line-height: 1.6;
-				margin-bottom: 12rpx;
-				text-align: justify;
-			}
-
-			.note {
-				color: #FF6A30;
-				background-color: #FFF5F1;
-				padding: 12rpx 20rpx;
-				border-radius: 8rpx;
-				margin-top: 15rpx;
-			}
-		}
-	}
-
-	.divider-bottom {
-		width: 80%;
-		position: absolute;
-		bottom: 20px;
-		left: 0;
-		right: 0;
-		margin-left: auto;
-		margin-right: auto;
-		color: #BABABA;
-
-		.text {
-			display: flex;
-			justify-content: center;
 		}
 	}
 </style>

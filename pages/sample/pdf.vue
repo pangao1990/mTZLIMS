@@ -7,7 +7,9 @@
 			<span class="nav-title">报告详情</span>
 			<!-- <tn-loading :show="state.isLoading" animation color="#fff" mode="flower" /> -->
 		</div>
-		<div class="nav-side"></div>
+		<div class="nav-side">
+			<tn-icon name="download-simple" bold size="22px" custom-class="nav-btn" @click="onDownload" />
+		</div>
 	</div>
 
 	<web-view :src="state.allUrl" @load="onWebViewLoad" @error="onWebViewError" style="margin-top: 100rpx"></web-view>
@@ -29,13 +31,18 @@
 		isBack2Home: false,
 		viewerUrl: '/static/pdfjs/web/viewer.html',
 		allUrl: '',
+		downloadUrl: '',
 		// isLoading: true,
 		// loadingTimer: null
 	})
 
 	onLoad((option) => {
 		// console.log('onLoad', option)
-		state.allUrl = state.viewerUrl + '?file=' + option.url
+		// let url = option.url.replace('http://58.215.216.131:5555/', 'http://tzlims.pangao.vip:5555/')
+		state.downloadUrl = decodeURIComponent(option.url)
+		state.allUrl = state.viewerUrl + '?file=' + encodeURIComponent(state.downloadUrl)
+		// console.log('state.allUrl', state.allUrl)
+		// console.log('state.downloadUrl', state.downloadUrl)
 	})
 
 	onMounted(() => {
@@ -70,6 +77,10 @@
 		}
 	}
 
+	const onDownload = () => {
+		window.open(state.downloadUrl)
+	}
+
 	// 加载完成
 	const onWebViewLoad = () => {
 		// console.log('onWebViewLoad')
@@ -79,6 +90,19 @@
 	const onWebViewError = () => {
 		// console.log('onWebViewError')
 		state.isLoading = false
+	}
+
+	// 字符串 转 Base64
+	const base64Encode = (str) => {
+		const encoder = new TextEncoder()
+		const uint8Array = encoder.encode(str)
+		return uni.arrayBufferToBase64(uint8Array)
+	}
+	// Base64 转 字符串
+	const base64Decode = (base64) => {
+		const uint8Array = uni.base64ToArrayBuffer(base64)
+		const decoder = new TextDecoder()
+		return decoder.decode(uint8Array)
 	}
 </script>
 
@@ -120,5 +144,10 @@
 
 	.nav-back {
 		color: #fff;
+	}
+
+	.nav-btn {
+		color: #fff;
+		margin-left: auto;
 	}
 </style>

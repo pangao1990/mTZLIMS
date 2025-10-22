@@ -74,12 +74,15 @@
 				</div>
 				<div class="form-item">
 					<div class="item-label required">销售端</div>
-					<zxz-uni-data-select :disabled="state.isUse" v-model="state.client_type_id" :localdata="storeUserInfo.clientList" filterable placeholder="请选择销售端名称"
-						emptyTips="无数据"></zxz-uni-data-select>
+					<zxz-uni-data-select :disabled="state.isUse || storeUserInfo.userInfos.role == '终端管理' || storeUserInfo.userInfos.role == '业务经理'" v-model="state.client_type_id"
+						:localdata="storeUserInfo.clientList" filterable placeholder="请选择销售端名称" emptyTips="无数据"></zxz-uni-data-select>
 				</div>
 				<div class="form-item">
 					<div class="item-label">物流单号</div>
-					<tn-input :disabled="state.isUse" v-model="sampleInfo.tracking_number" placeholder="请输入物流单号" :clearable="!state.isUse" />
+					<div class="hospital-control">
+						<tn-input :disabled="state.isUse" v-model="sampleInfo.tracking_number" placeholder="请输入物流单号" :clearable="!state.isUse" />
+						<!-- <tn-button :disabled="state.isUse" @click="onScan" text :text-color="state.isUse ? '#BABABA' : '#244851'" font-size="30rpx">扫码</tn-button> -->
+					</div>
 				</div>
 				<div class="form-item">
 					<div class="item-label">备注信息</div>
@@ -115,8 +118,8 @@
 					<div class="item-label required">送检单位</div>
 					<div class="hospital-control">
 						<zxz-uni-data-select :disabled="state.isUse" v-model="sampleInfo.hospital" :localdata="storeUserInfo.hospitalList" filterable placeholder="请选择送检单位"
-							emptyTips="无数据" @inputChange="onHospitalChange"></zxz-uni-data-select>
-						<tn-button :disabled="state.isUse" @click="onHospitalAdd" text :text-color="state.isUse ? '#BABABA' : '#244851'" font-size="30rpx">新增</tn-button>
+							emptyTips="无数据"></zxz-uni-data-select>
+						<!-- <tn-button :disabled="state.isUse" @click="onHospitalAdd" text :text-color="state.isUse ? '#BABABA' : '#244851'" font-size="30rpx">新增</tn-button> -->
 					</div>
 				</div>
 				<div class="form-item">
@@ -247,7 +250,9 @@
 		apiClientGetList,
 		apiApplicationInfoGetInfoForAPI,
 		apiProductGetList,
-		apiConfigMatchAPIAdd
+		apiConfigMatchAPIAdd,
+		apiConfigClientGetList,
+		apiConfigManagerGetList
 	} from '@/api/sample'
 
 	const storeUserInfo = useStoreUserInfo()
@@ -432,7 +437,8 @@
 	}
 	const getHospitalList = () => {
 		const para = {
-			userId: storeUserInfo.userInfos.id
+			userId: storeUserInfo.userInfos.id,
+			size: 10000
 		}
 		apiHospitalGetList(para)
 			.then((res) => {
@@ -476,9 +482,27 @@
 			})
 	}
 
-	const onHospitalChange = (e) => {
-		console.log('onHospitalChange', e)
+	const onScan = (e) => {
+		// console.log('onScan', e)
+		// 允许从相机和相册扫码
+		uni.scanCode({
+			success: (res) => {
+				// console.log('扫码结果:', res);
+				uni.showToast({
+					title: res.result,
+					icon: 'none'
+				});
+			},
+			fail: (err) => {
+				// console.log('扫码失败:', err);
+				uni.showToast({
+					title: '扫码失败',
+					icon: 'none'
+				});
+			}
+		})
 	}
+
 	const onHospitalAdd = () => {
 		// console.log('onHospitalAdd')
 		state.showDialogHospital = true
@@ -1174,6 +1198,40 @@
 				storeUserInfo.setIsReLoad(false)
 			}
 		})
+	watch(
+		() => storeUserInfo.userInfos.role,
+		(role) => {
+			if (role == '终端管理') {
+				apiConfigClientGetList({
+					type: 'clientUserId',
+					page: parseInt(storeUserInfo.userInfos.id)
+				}).then((res) => {
+					const resList = res.list
+					// console.log('resList', resList)
+					if (resList.length > 0) {
+						// sampleInfo.client_id = resList[0]['id']
+						// sampleInfo['client_type'] = 'client'
+						state.client_type_id = 'client' + resList[0]['id']
+					}
+				})
+			} else if (role == '业务经理') {
+				apiConfigManagerGetList({
+					type: 'managerUserId',
+					page: parseInt(storeUserInfo.userInfos.id)
+				}).then((res) => {
+					const resList = res.list
+					// console.log('resList', resList)
+					if (resList.length > 0) {
+						// sampleInfo.client_id = resList[0]['id']
+						// sampleInfo['client_type'] = 'manager'
+						state.client_type_id = 'manager' + resList[0]['id']
+					}
+				})
+			}
+		}, {
+			immediate: true
+		}
+	)
 </script>
 
 <style scoped lang="scss">

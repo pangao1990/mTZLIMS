@@ -57,6 +57,7 @@
 									<view class="item-text-container">
 										<view class="item-name-row">
 											<text class="item-name" v-html="searched ? highlightKeyword(item2.name) : item2.name"></text>
+											<text class="item-price" v-if="item2.price">¥{{item2.price}}</text>
 										</view>
 										<text class="item-description" v-if="item2.testing_content"
 											v-html="searched ? highlightKeyword(item2.testing_content) : item2.testing_content"></text>

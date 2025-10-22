@@ -131,6 +131,10 @@
 				<tn-input v-model="searchAdv.lab_release_date" placeholder="请选择发布时间" clearable :disabled="searchAdv.dateRangeVisible&&searchAdv.dateRangeType=='lab_release_date'"
 					@focus="onDateRangeOpen('lab_release_date')" />
 			</div>
+			<div class="search-title">检测项目</div>
+			<div class="search-content">
+				<tn-input v-model="searchAdv.product_name" placeholder="请输入检测项目" clearable />
+			</div>
 			<div class="search-title">送检单位</div>
 			<div class="search-content">
 				<zxz-uni-data-select v-model="searchAdv.hospital" :localdata="searchAdv.hospitalList" clear filterable placeholder="请选择送检单位" emptyTips="无数据"></zxz-uni-data-select>
@@ -196,6 +200,7 @@
 		dateRangeType: '',
 		collection_date: '',
 		lab_release_date: '',
+		product_name: '',
 		hospital: '',
 		hospitalList: [],
 		name: '',
@@ -267,7 +272,7 @@
 
 	// 高级检索
 	const onSearchAdvOpen = () => {
-		searchAdv.heightPopup = 1000
+		searchAdv.heightPopup = 1450
 		searchAdv.dateRangeVisible = false
 		searchAdv.showPopup = true
 		getHospitalList()
@@ -307,7 +312,7 @@
 	}
 	const onDateRangeOpen = (type) => {
 		searchAdv.dateRangeType = type
-		searchAdv.heightPopup = 1600
+		searchAdv.heightPopup = 2050
 		searchAdv.dateRangeVisible = true
 	}
 	const onDateRangeSure = (e) => {
@@ -318,16 +323,17 @@
 		if (searchAdv.dateRangeType == 'collection_date') searchAdv.collection_date = dateRange
 		else if (searchAdv.dateRangeType == 'lab_release_date') searchAdv.lab_release_date = dateRange
 		searchAdv.dateRangeVisible = false
-		searchAdv.heightPopup = 1000
+		searchAdv.heightPopup = 1450
 	}
 	const onDateRangeCancel = () => {
 		searchAdv.dateRangeVisible = false
-		searchAdv.heightPopup = 1000
+		searchAdv.heightPopup = 1450
 	}
 	const onSearchAdvClear = () => {
 		searchAdv.dateRangeVisible = false
 		searchAdv.collection_date = ''
 		searchAdv.lab_release_date = ''
+		searchAdv.product_name = ''
 		searchAdv.hospital = ''
 		searchAdv.name = ''
 		searchAdv.search = {}
@@ -341,6 +347,7 @@
 		if (searchAdv.lab_release_date != '') searchAdv.search['lab_info.lab_release_date'] = searchAdv.lab_release_date
 		if (searchAdv.hospital != '') searchAdv.search['sample_info.hospital'] = searchAdv.hospital
 		if (searchAdv.name != '') searchAdv.search['sample_info.name'] = searchAdv.name
+		if (searchAdv.product_name != '') searchAdv.search['productName'] = searchAdv.product_name
 		if (JSON.stringify(searchAdv.search) !== '{}') searchAdv.isRed = true
 		searchAdv.showPopup = false
 		postList()
@@ -376,7 +383,7 @@
 						if (type == 'download') window.open(res['url'])
 						// 查看pdf
 						else uni.navigateTo({
-							url: `/pages/sample/pdf?url=${res['url']}`
+							url: `/pages/sample/pdf?url=${encodeURIComponent(res['url'])}`
 						})
 					} else {
 						// 下载
@@ -466,7 +473,7 @@
 						if (type == 'download') window.open(res['url'])
 						// 查看pdf
 						else uni.navigateTo({
-							url: `/pages/sample/pdf?url=${res['url']}`
+							url: `/pages/sample/pdf?url=${encodeURIComponent(res['url'])}`
 						})
 					} else {
 						// 下载

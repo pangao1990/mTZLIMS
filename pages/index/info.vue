@@ -16,7 +16,12 @@
 		<div class="content-container">
 			<!-- 产品基本信息卡片 -->
 			<view class="card product-basic">
-				<view class="product-name">{{state.info.name}}</view>
+				<div class="card-header">
+					<div class="product-name-price">
+						<div class="product-name">{{state.info.name}}</div>
+					</div>
+					<div class="product-price">¥{{state.info.price}}</div>
+				</div>
 				<view class="product-category">
 					<text v-if="state.info.sort1!= ''" class="category-tag primary">{{state.info.sort1}}</text>
 					<text v-if="state.info.sort2!= ''" class="category-tag primary">{{state.info.sort2}}</text>
@@ -42,11 +47,16 @@
 			</view>
 
 			<!-- 产品规格卡片 -->
-			<view v-if="state.info.submission_requirements!='' || state.info.report_time!='' || state.info.storage_requirements!='' || state.info.transportation_requirements!=''"
+			<view
+				v-if=" state.info.method!='' ||  state.info.submission_requirements!='' || state.info.report_time!='' || state.info.storage_requirements!='' || state.info.transportation_requirements!=''"
 				class="card product-specs">
 				<view class="card-title">
 					<view class="title-circle"></view>
-					<text>样本要求</text>
+					<text>产品规格</text>
+				</view>
+				<view v-if="state.info.method!=''" class="spec-item">
+					<tn-icon name="tag" size="18px" color="#244851"></tn-icon>
+					<text>检测方法: {{state.info.method}}</text>
 				</view>
 				<view v-if="state.info.submission_requirements!=''" class="spec-item">
 					<tn-icon name="star" size="18px" color="#244851"></tn-icon>
@@ -302,34 +312,35 @@
 
 		.card-header {
 			display: flex;
-			justify-content: flex-end;
-			align-items: center;
-			margin-bottom: 20rpx;
+			justify-content: space-between;
+			align-items: flex-start;
 		}
 
-		.product-id {
-			margin-right: auto;
-			font-size: 24rpx;
-			color: #666;
-			background: rgba(255, 255, 255, 0.8);
-			padding: 6rpx 16rpx;
-			border-radius: 20rpx;
-		}
-
-		.product-price {
-			font-size: 36rpx;
-			font-weight: bold;
-			color: #FF5A5F;
+		.product-name-price {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			margin-right: 10px;
 		}
 
 		.product-name {
 			font-size: 36rpx;
 			font-weight: 600;
 			color: #333;
-			margin-bottom: 24rpx;
+			color: #1a2b3c;
 			line-height: 1.4;
-			overflow-wrap: break-word; // 允许单词在行尾被截断
-			word-break: break-all; // 允许单词在任意位置被截断
+			margin-bottom: 16px;
+			overflow-wrap: break-word;
+			word-break: break-word;
+		}
+
+		.product-price {
+			font-size: 36rpx;
+			font-weight: bold;
+			line-height: 1.4;
+			color: #FF5A5F;
+			text-align: right;
+			white-space: nowrap;
 		}
 
 		.product-category {
