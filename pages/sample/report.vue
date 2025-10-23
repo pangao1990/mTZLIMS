@@ -195,7 +195,7 @@
 	// 高级搜索
 	const searchAdv = reactive({
 		showPopup: false,
-		heightPopup: 100,
+		heightPopup: 1250,
 		dateRangeVisible: false,
 		dateRangeType: '',
 		collection_date: '',
@@ -272,7 +272,7 @@
 
 	// 高级检索
 	const onSearchAdvOpen = () => {
-		searchAdv.heightPopup = 1450
+		searchAdv.heightPopup = 1250
 		searchAdv.dateRangeVisible = false
 		searchAdv.showPopup = true
 		getHospitalList()
@@ -312,7 +312,7 @@
 	}
 	const onDateRangeOpen = (type) => {
 		searchAdv.dateRangeType = type
-		searchAdv.heightPopup = 2050
+		searchAdv.heightPopup = 1250
 		searchAdv.dateRangeVisible = true
 	}
 	const onDateRangeSure = (e) => {
@@ -323,11 +323,11 @@
 		if (searchAdv.dateRangeType == 'collection_date') searchAdv.collection_date = dateRange
 		else if (searchAdv.dateRangeType == 'lab_release_date') searchAdv.lab_release_date = dateRange
 		searchAdv.dateRangeVisible = false
-		searchAdv.heightPopup = 1450
+		searchAdv.heightPopup = 1250
 	}
 	const onDateRangeCancel = () => {
 		searchAdv.dateRangeVisible = false
-		searchAdv.heightPopup = 1450
+		searchAdv.heightPopup = 1250
 	}
 	const onSearchAdvClear = () => {
 		searchAdv.dateRangeVisible = false

@@ -20,7 +20,7 @@
 					<div class="product-name-price">
 						<div class="product-name">{{state.info.name}}</div>
 					</div>
-					<div class="product-price">¥{{state.info.price}}</div>
+					<div v-if="state.info.price != ''" class="product-price">¥{{state.info.price}}</div>
 				</div>
 				<view class="product-category">
 					<text v-if="state.info.sort1!= ''" class="category-tag primary">{{state.info.sort1}}</text>

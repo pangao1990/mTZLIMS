@@ -212,23 +212,6 @@
 
 	// 跳转登录
 	const onLogin = () => {
-		uni.scanCode({
-			success: (res) => {
-				console.log('扫码结果:', res);
-				uni.showToast({
-					title: res.result,
-					icon: 'none'
-				});
-			},
-			fail: (err) => {
-				console.log('扫码失败:', err);
-				uni.showToast({
-					title: '扫码失败',
-					icon: 'none'
-				});
-			}
-		})
-
 		const token = storeUserInfo.token
 		if (token == '') storeUserInfo.setIsShowLogin(true)
 		else {
