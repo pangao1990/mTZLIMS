@@ -1,6 +1,5 @@
 <template>
 	<tn-notify ref="refNotify" />
-	<tn-modal ref="refModal" />
 
 	<div class="app-container">
 
@@ -113,7 +112,6 @@
 	const storeUserInfo = useStoreUserInfo()
 
 	const refNotify = ref()
-	const refModal = ref()
 	const state = reactive({
 		isBack2Home: false,
 		search: '',

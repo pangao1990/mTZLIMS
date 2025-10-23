@@ -1,6 +1,22 @@
 <template>
 	<tn-notify ref="refNotify" />
-	<tn-modal ref="modalRef" />
+
+	<tn-modal ref="modalRef">
+		<template #default>
+			<div class="logout-modal">
+				<div class="info-item">
+					<span class="label">姓名：</span>
+					<span class="value">{{ storeUserInfo.userInfos.name }}</span>
+				</div>
+				<div class="info-item">
+					<span class="label">邮箱：</span>
+					<span class="value">{{ storeUserInfo.userInfos.email }}</span>
+				</div>
+				<div class="confirm-text">是否退出登录？</div>
+			</div>
+		</template>
+	</tn-modal>
+
 	<div class="bg">
 		<!-- 顶部导航栏 -->
 		<div class="nav">
@@ -364,9 +380,16 @@
 		if (token == '') storeUserInfo.setIsShowLogin(true)
 		else {
 			modalRef.value?.showModal({
-				title: '',
+				title: '退出提示',
 				content: '是否退出登录？',
 				showCancel: true,
+				confirmText: '退出登录',
+				confirmStyle: {
+					color: '#244851',
+				},
+				cancelStyle: {
+					color: '#999',
+				},
 				cancel: () => {
 					// console.log('点击了取消按钮')
 				},
@@ -809,6 +832,55 @@
 
 	.mt6 {
 		margin-top: 6px;
+	}
+
+	// 退出登录
+	.logout-modal {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 10px 28px;
+		background-color: #fff;
+		border-radius: 16px;
+		font-family: 'Segoe UI', 'PingFang SC', sans-serif;
+		color: #333;
+
+		.info-item {
+			display: flex;
+			width: 100%;
+			justify-content: space-between;
+			align-items: center;
+			background: #f9f9f9;
+			padding: 10px 14px;
+			margin: 6px 0;
+			border-radius: 8px;
+		}
+
+		.label {
+			font-weight: 500;
+			color: #666;
+		}
+
+		.value {
+			font-weight: 600;
+			color: #222;
+		}
+
+		.confirm-text {
+			margin-top: 18px;
+			font-size: 16px;
+			font-weight: 500;
+			color: #444;
+		}
+
+		.modal-actions {
+			display: flex;
+			justify-content: center;
+			gap: 16px;
+			margin-top: 22px;
+			width: 100%;
+		}
 	}
 </style>
 <style>

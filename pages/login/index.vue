@@ -313,7 +313,9 @@
 					// 存储样本信息
 					storeUserInfo.setUserInfos({
 						'id': res.info.id,
-						'role': res.info.role
+						'role': res.info.role,
+						'name': res.info.name,
+						'email': res.info.email
 					})
 
 					if (state.loginForm.remember) {

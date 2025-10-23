@@ -94,7 +94,9 @@ export const useStoreUserInfo = defineStore('userInfo', () => {
 
 	const userInfos = ref({
 		id: '',
-		role: ''
+		role: '',
+		name: '',
+		email: ''
 	})
 
 	function setUserInfos(info = null) {
@@ -116,7 +118,9 @@ export const useStoreUserInfo = defineStore('userInfo', () => {
 	function clearUserInfos() {
 		userInfos.value = {
 			id: '',
-			role: ''
+			role: '',
+			name: '',
+			email: ''
 		}
 		setUserInfos(userInfos.value)
 	}
