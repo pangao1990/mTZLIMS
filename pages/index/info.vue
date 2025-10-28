@@ -25,7 +25,7 @@
 			</div>
 			<span class="nav-title">检测项目</span>
 			<div class="nav-side">
-				<tn-icon name="my" bold size="22px" custom-class="nav-btn" @click="onLogin" />
+				<tn-icon :name="storeUserInfo.token == '' ? 'my': 'my-love'" bold size="22px" custom-class="nav-btn" @click="onLogin" />
 			</div>
 		</div>
 
@@ -203,6 +203,7 @@
 		const token = storeUserInfo.token
 		if (token == '') storeUserInfo.setIsShowLogin(true)
 		else {
+			storeUserInfo.setIsReLoad(false)
 			modalRef.value?.showModal({
 				title: '退出提示',
 				content: '是否退出登录？',
@@ -233,6 +234,7 @@
 	watch(
 		() => storeUserInfo.isReLoad,
 		(isReLoad) => {
+			// console.log('isReLoad', isReLoad)
 			if (isReLoad) {
 				getInfo()
 				storeUserInfo.setIsReLoad(false)

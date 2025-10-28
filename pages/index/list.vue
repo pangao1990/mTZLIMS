@@ -25,7 +25,7 @@
 			</div>
 			<span class="nav-title">项目查询</span>
 			<div class="nav-side">
-				<tn-icon name="my" bold size="22px" custom-class="nav-btn" @click="onLogin" />
+				<tn-icon :name="storeUserInfo.token == '' ? 'my': 'my-love'" bold size="22px" custom-class="nav-btn" @click="onLogin" />
 			</div>
 		</div>
 
@@ -342,8 +342,8 @@
 		getList()
 	}
 
-	const getList = () => {
-		state.loading = true
+	const getList = (ifLoad = true) => {
+		if (ifLoad) state.loading = true
 		const para = {
 			'sort1': state.sort1,
 			'search': state.search,
@@ -352,12 +352,12 @@
 		apiProductGetListFromSort1(para)
 			.then((res) => {
 				// console.log('res', res)
-				state.loading = false
 				state.info = res.list
 				// 仅有一组数据时，折叠面板默认开启
 				if (state.info.length == 1) currentCollapse.value = 0
+				if (ifLoad) state.loading = false
 			}).catch(() => {
-				state.loading = false
+				if (ifLoad) state.loading = false
 			})
 	}
 
@@ -379,6 +379,7 @@
 		const token = storeUserInfo.token
 		if (token == '') storeUserInfo.setIsShowLogin(true)
 		else {
+			storeUserInfo.setIsReLoad(false)
 			modalRef.value?.showModal({
 				title: '退出提示',
 				content: '是否退出登录？',
@@ -470,9 +471,9 @@
 	watch(
 		() => storeUserInfo.isReLoad,
 		(isReLoad) => {
+			// console.log('isReLoad', isReLoad)
 			if (isReLoad) {
-				getList()
-				storeUserInfo.setIsReLoad(false)
+				getList(false)
 			}
 		})
 </script>

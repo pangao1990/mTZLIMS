@@ -268,6 +268,7 @@
 
 	// 请求登录
 	const postLogin = (ifMD5 = true) => {
+		storeUserInfo.setIsReLoad(false)
 		if (ifMD5) uni.showLoading({
 			icon: 'loading',
 			title: '登录中...'
@@ -433,6 +434,7 @@
 		(isShowLogin) => {
 			// console.log('isShowLogin', isShowLogin)
 			if (isShowLogin) refPopup.value.open()
+			else refPopup.value.close()
 		})
 </script>
 

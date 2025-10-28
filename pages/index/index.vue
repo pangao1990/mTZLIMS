@@ -24,7 +24,7 @@
 					<tn-search-box v-model="state.search" @focus="gotoSearchSort1('')" @search="gotoSearchSort1('')" placeholder="请输入检测项目（下单、查询）"
 						input-style="background-color: #f5f7fa; border-radius: 20px" search-button-bg-color="#3A7BFF" :search-button="false" />
 					<view class="login" @click="onLogin">
-						<tn-icon name="my" bold size="22px" />
+						<tn-icon :name="storeUserInfo.token == '' ? 'my': 'my-love'" bold size="22px" />
 					</view>
 				</view>
 			</view>
@@ -146,7 +146,7 @@
 
 	// 跳转到 分类检索 页面
 	const gotoSearchSort1 = (sort1) => {
-		console.log('gotoSearchSort1', sort1)
+		// console.log('gotoSearchSort1', sort1)
 		uni.navigateTo({
 			url: `/pages/index/list?sort1=${sort1}`
 		})
@@ -230,6 +230,7 @@
 		const token = storeUserInfo.token
 		if (token == '') storeUserInfo.setIsShowLogin(true)
 		else {
+			storeUserInfo.setIsReLoad(false)
 			modalRef.value?.showModal({
 				title: '退出提示',
 				content: '是否退出登录？',

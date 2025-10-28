@@ -9,7 +9,7 @@ import {
 const storeUserInfo = useStoreUserInfo()
 
 // 注意 ！！！ add.vue 的 urlRoot 参数也要修改
-const rootUrl = 'http://58.215.216.131:5555/api' // http://127.0.0.1:8879/api    http://58.215.216.131:5555/api
+const rootUrl = 'http://127.0.0.1:8879/api' // http://127.0.0.1:8879/api    http://58.215.216.131:5555/api
 
 // request.js
 export default {
@@ -27,6 +27,7 @@ export default {
 		},
 		handleResponse(response) {
 			let res = response.data
+			// console.log('res', res)
 			if (res.status === 401) {
 				// token过期
 				storeUserInfo.setToken('')
