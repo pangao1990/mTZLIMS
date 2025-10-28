@@ -267,7 +267,7 @@
 		selectProductIdList: [''],
 		productInfoList: [], // 可选择的检测项目
 		productInfoListExtra: [], // 理论上不可选择的检测项目，但这一次暂时可选择
-		urlRoot: 'http://58.215.216.131:5555/', // http://127.0.0.1:8879/    http://58.215.216.131:5555/
+		urlRoot: 'http://lims.akrivamed.com:5555/', // http://127.0.0.1:8879/    http://lims.akrivamed.com:5555/     http://58.215.216.131:5555/
 		attachments: [],
 		showDialogHospital: false,
 		recentProduct: [],
